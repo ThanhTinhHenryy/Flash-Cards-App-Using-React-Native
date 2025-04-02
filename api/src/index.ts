@@ -36,6 +36,13 @@ app.get("/sets", (async (req: Request, res: Response) => {
   res.json(sets);
 }) as RequestHandler);
 
+// * Get sets theo id
+app.get("/sets/:id", (async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const set = await client.db.sets.read(id);
+  res.json(set);
+}) as RequestHandler);
+
 app.listen(PORT, () => {
   console.log(`Đang lắng nghe trên cổng: ${PORT}`);
 });
