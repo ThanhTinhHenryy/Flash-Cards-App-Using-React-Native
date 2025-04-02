@@ -8,6 +8,209 @@ import type {
 
 const tables = [
   {
+    name: "cards",
+    checkConstraints: {
+      cards_xata_id_length_xata_id: {
+        name: "cards_xata_id_length_xata_id",
+        columns: ["xata_id"],
+        definition: "CHECK ((length(xata_id) < 256))",
+      },
+    },
+    foreignKeys: {
+      set_link: {
+        name: "set_link",
+        columns: ["set"],
+        referencedTable: "sets",
+        referencedColumns: ["xata_id"],
+        onDelete: "SET NULL",
+      },
+    },
+    primaryKey: [],
+    uniqueConstraints: {
+      _pgroll_new_cards_xata_id_key: {
+        name: "_pgroll_new_cards_xata_id_key",
+        columns: ["xata_id"],
+      },
+    },
+    columns: [
+      {
+        name: "answer",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "image",
+        type: "file",
+        file: { defaultPublicAccess: false },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.file.dpa":true}',
+      },
+      {
+        name: "question",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "set",
+        type: "link",
+        link: { table: "sets" },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.link":"sets"}',
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+        comment: "",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+        comment: "",
+      },
+    ],
+  },
+  {
+    name: "learning",
+    checkConstraints: {
+      learning_xata_id_length_xata_id: {
+        name: "learning_xata_id_length_xata_id",
+        columns: ["xata_id"],
+        definition: "CHECK ((length(xata_id) < 256))",
+      },
+    },
+    foreignKeys: {
+      set_link: {
+        name: "set_link",
+        columns: ["set"],
+        referencedTable: "sets",
+        referencedColumns: ["xata_id"],
+        onDelete: "SET NULL",
+      },
+    },
+    primaryKey: [],
+    uniqueConstraints: {
+      _pgroll_new_learning_xata_id_key: {
+        name: "_pgroll_new_learning_xata_id_key",
+        columns: ["xata_id"],
+      },
+    },
+    columns: [
+      {
+        name: "cards_correct",
+        type: "int",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "cards_total",
+        type: "int",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "cards_wrong",
+        type: "int",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "score",
+        type: "float",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "set",
+        type: "link",
+        link: { table: "sets" },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.link":"sets"}',
+      },
+      {
+        name: "user",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+        comment: "",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+        comment: "",
+      },
+    ],
+  },
+  {
     name: "sets",
     checkConstraints: {
       sets_xata_id_length_xata_id: {
@@ -25,6 +228,14 @@ const tables = [
       },
     },
     columns: [
+      {
+        name: "cards",
+        type: "int",
+        notNull: false,
+        unique: false,
+        defaultValue: "0",
+        comment: "",
+      },
       {
         name: "creator",
         type: "text",
@@ -100,16 +311,105 @@ const tables = [
       },
     ],
   },
+  {
+    name: "user_sets",
+    checkConstraints: {
+      user_sets_xata_id_length_xata_id: {
+        name: "user_sets_xata_id_length_xata_id",
+        columns: ["xata_id"],
+        definition: "CHECK ((length(xata_id) < 256))",
+      },
+    },
+    foreignKeys: {
+      set_link: {
+        name: "set_link",
+        columns: ["set"],
+        referencedTable: "sets",
+        referencedColumns: ["xata_id"],
+        onDelete: "SET NULL",
+      },
+    },
+    primaryKey: [],
+    uniqueConstraints: {
+      _pgroll_new_user_sets_xata_id_key: {
+        name: "_pgroll_new_user_sets_xata_id_key",
+        columns: ["xata_id"],
+      },
+    },
+    columns: [
+      {
+        name: "set",
+        type: "link",
+        link: { table: "sets" },
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: '{"xata.link":"sets"}',
+      },
+      {
+        name: "user",
+        type: "text",
+        notNull: false,
+        unique: false,
+        defaultValue: null,
+        comment: "",
+      },
+      {
+        name: "xata_createdat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_id",
+        type: "text",
+        notNull: true,
+        unique: true,
+        defaultValue: "('rec_'::text || (xata_private.xid())::text)",
+        comment: "",
+      },
+      {
+        name: "xata_updatedat",
+        type: "datetime",
+        notNull: true,
+        unique: false,
+        defaultValue: "now()",
+        comment: "",
+      },
+      {
+        name: "xata_version",
+        type: "int",
+        notNull: true,
+        unique: false,
+        defaultValue: "0",
+        comment: "",
+      },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
 export type InferredTypes = SchemaInference<SchemaTables>;
 
+export type Cards = InferredTypes["cards"];
+export type CardsRecord = Cards & XataRecord;
+
+export type Learning = InferredTypes["learning"];
+export type LearningRecord = Learning & XataRecord;
+
 export type Sets = InferredTypes["sets"];
 export type SetsRecord = Sets & XataRecord;
 
+export type UserSets = InferredTypes["user_sets"];
+export type UserSetsRecord = UserSets & XataRecord;
+
 export type DatabaseSchema = {
+  cards: CardsRecord;
+  learning: LearningRecord;
   sets: SetsRecord;
+  user_sets: UserSetsRecord;
 };
 
 const DatabaseClient = buildClient();
