@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, RequestHandler } from "express";
 import dotenv from "dotenv";
 import { getXataClient } from "./xata";
 import { cardsCapitals, cardsProgramming, sets } from "./seed_database";
@@ -26,6 +26,16 @@ app.get("/init", async (req: Request, res: Response) => {
 
   res.json({ results: "ok" });
 });
+
+// * Get tat ca sets
+app.get("/sets", (async (req: Request, res: Response) => {
+  const sets = await client.db.sets
+    .select(["xata_id", "title", "description", "image", "cards"])
+    .filter({ private: false })
+    .getAll();
+  res.json(sets);
+}) as RequestHandler);
+
 app.listen(PORT, () => {
   console.log(`Đang lắng nghe trên cổng: ${PORT}`);
 });
