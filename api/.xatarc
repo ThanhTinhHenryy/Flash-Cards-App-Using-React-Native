@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://TuVungClone-labvbd.us-east-1.xata.sh/db/flashCardsApp-DACS-ReactNative",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
