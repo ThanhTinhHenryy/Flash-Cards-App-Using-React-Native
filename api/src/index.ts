@@ -122,6 +122,35 @@ app.post("/cards", (async (req, res) => {
   res.json(card);
 }) as RequestHandler);
 
+// * Lay tat ca cards cua 1 set
+app.get("/cards", (async (req, res) => {
+  const { setid } = req.query;
+  const cards = await client.db.cards
+    .select(["*", "set.*"])
+    .filter({ set: setid })
+    .getAll();
+  res.json(cards);
+}) as RequestHandler);
+
+// Learn a specific number of cards from a set
+app.get("/cards/learn", (async (req, res) => {
+  const { setid, limit } = req.query;
+
+  const cards = await client.db.cards
+    .select(["question", "answer", "image"])
+    .filter({ set: setid })
+    .getAll();
+
+  // Get a random set of cards using limit
+  const randomCards = cards
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+    .slice(0, +limit!);
+
+  res.json(randomCards);
+}) as RequestHandler);
+
 app.listen(PORT, () => {
   console.log(`Đang lắng nghe trên cổng: ${PORT}`);
 });
