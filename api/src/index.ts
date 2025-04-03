@@ -56,7 +56,29 @@ app.post("/sets", (async (req: Request, res: Response) => {
       : null,
   });
 
+  console.log("set: ", set);
   res.json(set);
+}) as RequestHandler);
+
+// Them set vao fav cua user
+app.post("/usersets", (async (req: Request, res: Response) => {
+  const { user, set } = req.body;
+  const userSet = await client.db.user_sets.create({
+    user,
+    set,
+  });
+  res.json(userSet);
+}) as RequestHandler);
+
+// Lay tat ca sets cua user
+app.get("/usersets", (async (req: Request, res: Response) => {
+  const { user } = req.query;
+
+  const sets = await client.db.user_sets
+    .select(["xata_id", "set.*"])
+    .filter({ user: `${user}` })
+    .getAll();
+  res.json(sets);
 }) as RequestHandler);
 
 app.listen(PORT, () => {
