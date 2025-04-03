@@ -132,7 +132,7 @@ app.get("/cards", (async (req, res) => {
   res.json(cards);
 }) as RequestHandler);
 
-// Learn a specific number of cards from a set
+// * API này cho phép người dùng lấy một số lượng thẻ học ngẫu nhiên từ một set thẻ cụ thể.
 app.get("/cards/learn", (async (req, res) => {
   const { setid, limit } = req.query;
 
@@ -141,7 +141,7 @@ app.get("/cards/learn", (async (req, res) => {
     .filter({ set: setid })
     .getAll();
 
-  // Get a random set of cards using limit
+  // * Get a random set of cards using limit: Người dùng có thể chỉ định số lượng thẻ muốn học thông qua tham số limit.
   const randomCards = cards
     .map((value) => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
@@ -149,6 +149,31 @@ app.get("/cards/learn", (async (req, res) => {
     .slice(0, +limit!);
 
   res.json(randomCards);
+}) as RequestHandler);
+
+// * Tao learning progress
+app.post("/learnings", (async (req, res) => {
+  const { user, set, cardsTotal, correct, wrong } = req.body;
+  const obj = {
+    user,
+    set,
+    cards_total: +cardsTotal,
+    cards_correct: +correct,
+    cards_wrong: +wrong,
+    score: (+correct / +cardsTotal) * 100,
+  };
+  const learning = await client.db.learning.create(obj);
+  res.json(learning);
+}) as RequestHandler);
+
+// * Lay tat ca progress learning
+app.get("/learnings", (async (req, res) => {
+  const { user } = req.query;
+  const learnings = await client.db.learning
+    .select(["*", "set.*"])
+    .filter({ user: `${user}` })
+    .getAll();
+  res.json(learnings);
 }) as RequestHandler);
 
 app.listen(PORT, () => {
