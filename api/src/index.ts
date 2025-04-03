@@ -39,7 +39,15 @@ app.get("/sets", (async (req: Request, res: Response) => {
 // * Get set theo id
 app.get("/sets/:id", (async (req: Request, res: Response) => {
   const { id } = req.params;
-  const set = await client.db.sets.read(id);
+  const set = await client.db.sets
+    .select(["xata_id", "title", "description", "image", "cards", "creator"])
+    .filter({ xata_id: id })
+    .getFirst();
+
+  if (!set) {
+    return res.status(404).json({ error: "Set not found" });
+  }
+
   res.json(set);
 }) as RequestHandler);
 

@@ -15,8 +15,8 @@ File api.ts này chứa các hàm gọi API để giao tiếp với server của
 export interface Set {
   cards: number;
   description: string;
-  creator: string;
-  id: string;
+  creator: string | null;
+  xata_id: string;
   title: string;
   image?: any;
 }

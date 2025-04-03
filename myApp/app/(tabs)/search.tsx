@@ -38,7 +38,7 @@ const Page = () => {
 
   const renderSetRow: ListRenderItem<Set> = ({ item }) => {
     return (
-      <Link href={`/(modals)/set/${item.id}`} asChild>
+      <Link href={`/(modals)/set/${item.xata_id}`} asChild>
         <TouchableOpacity style={styles.setRow}>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {item.image && (
@@ -70,9 +70,10 @@ const Page = () => {
       <FlatList
         data={sets}
         renderItem={renderSetRow}
-        // refreshControl={
-        //   <RefreshControl refreshing={isRefreshing} onRefresh={loadSets} />
-        // }
+        keyExtractor={(item) => item.xata_id}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={loadSets} />
+        }
       />
     </View>
   );
