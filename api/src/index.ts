@@ -1,6 +1,6 @@
 import express, { Request, Response, RequestHandler } from "express";
 import dotenv from "dotenv";
-import { getXataClient } from "./xata";
+import { getXataClient, SetsRecord } from "./xata";
 import { cardsCapitals, cardsProgramming, sets } from "./seed_database";
 
 dotenv.config();
@@ -60,7 +60,7 @@ app.post("/sets", (async (req: Request, res: Response) => {
   res.json(set);
 }) as RequestHandler);
 
-// Them set vao fav cua user
+// * Them set vao fav cua user
 app.post("/usersets", (async (req: Request, res: Response) => {
   const { user, set } = req.body;
   const userSet = await client.db.user_sets.create({
@@ -70,7 +70,7 @@ app.post("/usersets", (async (req: Request, res: Response) => {
   res.json(userSet);
 }) as RequestHandler);
 
-// Lay tat ca sets cua user
+// * Lay tat ca sets cua user
 app.get("/usersets", (async (req: Request, res: Response) => {
   const { user } = req.query;
 
@@ -80,6 +80,26 @@ app.get("/usersets", (async (req: Request, res: Response) => {
     .getAll();
   res.json(sets);
 }) as RequestHandler);
+
+// * Xoa set theo id
+const deleteSetHandler: express.RequestHandler = async (req, res) => {
+  const { id } = req.params;
+
+  // Lay danh sach user_sets lien quan
+  const existingSets = await client.db.user_sets.filter({ set: id }).getAll();
+
+  if (existingSets.length > 0) {
+    // Lấy danh sách xata_id cần xóa
+    const toDelete = existingSets.map((set) => set.xata_id);
+    await client.db.user_sets.delete(toDelete);
+  }
+  await client.db.sets.delete(id);
+
+  res.json({ success: true });
+};
+
+// * route del
+app.delete("/sets/:id", deleteSetHandler);
 
 app.listen(PORT, () => {
   console.log(`Đang lắng nghe trên cổng: ${PORT}`);
