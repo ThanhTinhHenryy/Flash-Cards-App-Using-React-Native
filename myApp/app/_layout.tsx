@@ -4,11 +4,23 @@ import { TouchableOpacity } from "react-native";
 import Colors from "@/constants/Colors";
 import "react-native-url-polyfill/auto";
 
-import { View, Text } from "react-native";
-import React from "react";
-
-const Layout = () => {
-  return <Stack />;
+const RootLayoutNav = () => {
+  const router = useRouter();
+  return (
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors.primary,
+        },
+        headerTintColor: "#fff",
+      }}
+    >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modals)/set/[id]"
+        options={{ presentation: "modal", title: "" }}
+      />
+    </Stack>
+  );
 };
-
-export default Layout;
+export default RootLayoutNav;
