@@ -101,6 +101,27 @@ const deleteSetHandler: express.RequestHandler = async (req, res) => {
 // * route del
 app.delete("/sets/:id", deleteSetHandler);
 
+// * +++++++++++++++++CARDs+++++++++++++++++++++
+
+// * Tao card moi
+app.post("/cards", (async (req, res) => {
+  const { set, question, answer } = req.body;
+  const card = await client.db.cards.create({
+    set,
+    question,
+    answer,
+  });
+
+  if (card) {
+    await client.db.sets.update(set, {
+      cards: {
+        $increment: 1,
+      },
+    });
+  }
+  res.json(card);
+}) as RequestHandler);
+
 app.listen(PORT, () => {
   console.log(`Đang lắng nghe trên cổng: ${PORT}`);
 });
